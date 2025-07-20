@@ -1,10 +1,20 @@
 const express=require('express')
 const { AuthCheck } = require('../middleware/auth');
-const UserController=require('../controller/UsersController')
+const UsersController = require('../controller/UsersController')
+const UserImageUpload = require('../helper/usersImageUpload')
 const router=express.Router()
 
-//@routes    /api/auth
+//@routes  POST  /api/auth/register 
+//Description     user register
+//@access    public
+router.post('/register', UserImageUpload.single('avatar'), UsersController.register)
+//@routes  POST  /api/auth/login
+//Description     user login
+//@access    public
+router.post('/login',UsersController.login)
 
-router.get('/',AuthCheck,UserController.userProfile)
-router.post('/login',UserController.login)
+
+//@routes    /api/auth
+router.get('/',AuthCheck,UsersController.userProfile)
+
 module.exports=router

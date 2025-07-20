@@ -1,17 +1,27 @@
-const express=require('express')
-const UsersController=require('../controller/UsersController')
-const UserImageUpload=require('../helper/usersImageUpload')
-//const { AuthCheck } = require('../middleware/auth')
-const router=express.Router()
+const express = require('express')
+const UsersController = require('../controller/UsersController')
+const UserImageUpload = require('../helper/usersImageUpload')
+const { AuthCheck } = require('../middleware/auth')
+const router = express.Router()
 
-//@routes    /api/users 
+//@routes  POST  /api/users/register 
+//Description     user register
+//@access    public
+router.post('/register', UserImageUpload.single('avatar'), UsersController.register)
 
-//post user     /api/users/register 
+//@routes   Post /api/users/login
+//Description     user login
+//@access    public
+router.post('/login', UsersController.login)
 
-router.post('/register',UserImageUpload.single('avatar'),UsersController.register)
+//@routes  GET  /api/users
+//Description     get user profile
+//@access    private
+router.get('/', AuthCheck, UsersController.userProfile)
+
 // router.post('/verify/email',UsersController.verifyEmail)
 // router.post('/login',UsersController.login)
 // router.post('/reset-password-link',UsersController.resetPasswordLink);
 // router.post('/reset-password/:id/:token',UsersController.resetPassword);
 
-module.exports=router
+module.exports = router

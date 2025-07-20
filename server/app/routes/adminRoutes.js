@@ -10,7 +10,8 @@ const router = express.Router();
 router.get('/', adminController.loginpage)
 //post login and register pages
 router.post('/login', adminController.login)
-
+//post register
+// router.post('/register', adminController.)
 //dashboard view
 router.get('/dashboard',EjsAuthCheck, adminController.ejsAuthCheck,adminController.dashboard)
 router.get('/user-list',EjsAuthCheck,adminController.getAllUsers)

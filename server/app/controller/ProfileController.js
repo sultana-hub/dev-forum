@@ -3,7 +3,7 @@ const { ProfileModel, profileValidation } = require('../model/Profile')
 const { UserModel } = require('../model/Users')
 const experienceValidation = require('../helper/validations/experience')
 const educationValidation = require('../helper/validations/education')
-
+const mongoose = require('mongoose')
 class ProfileController {
 
     async getProfile(req, res) {
@@ -116,7 +116,7 @@ class ProfileController {
 
     async allProfiles(req, res) {
         try {
-            const profiles = await ProfileModel.find().populate('user', ['name', 'avatar'])
+            const profiles = await ProfileModel.find().populate('user', ['name', 'avatar', 'city'])
             res.json(profiles)
         } catch (error) {
             console.error(error.message)
@@ -128,7 +128,16 @@ class ProfileController {
     //get profile by user id 
     async getProfilesByUserId(req, res) {
         try {
-            const profile = await ProfileModel.findOne({ user: req.params.user_id }).populate('user', ['name', 'avatar'])
+
+            const { user_id } = req.params
+
+            console.log("Requested user_id:", req.params.user_id);
+
+
+            const profile = await ProfileModel.findOne({ user: user_id  }).populate('user', ['name', 'avatar', 'city'])
+
+            console.log("Profile found:", profile);
+
             if (!profile) {
                 return res.status(httpStatusCode.NotFound).json({
                     message: "profile for this user does not exist"
@@ -147,6 +156,7 @@ class ProfileController {
             })
         }
     }
+
     // delete user ,profile and post
     async deleteUserData(req, res) {
         try {

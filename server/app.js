@@ -41,19 +41,24 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/uploads/users', express.static(path.join(__dirname, 'uploads/users')))
-//user routes
-const userRoutes=require('./app/routes/usersRoutes')
-app.use('/api/users',userRoutes)
+
+//frontend user routes
+// const userRoutes=require('./app/routes/usersRoutes')
+// app.use('/api/users',userRoutes)
+
+// //front end auth
+const authRoutes=require('./app/routes/authRoutes')
+app.use('/api/auth',authRoutes)
+
 //post
 const postRoutes=require('./app/routes/postsRoutes')
 app.use('/api/posts',postRoutes)
+
 //profile
 const profileRoutes=require('./app/routes/profileRoutes')
 app.use('/api/profile',profileRoutes)
-//front end auth
-const authRoutes=require('./app/routes/authRoutes')
-app.use('/api/auth',authRoutes)
-//admin
+
+//backend admin
 const adminRoute=require('./app/routes/adminRoutes')
 app.use('/admin', adminRoute);
 const PORT=process.env.PORT || 5000
