@@ -50,14 +50,14 @@ class ProfileController {
 
             const profileFields = {
                 user: req.user._id,
-                handle: req.body.handle,
+                handle: value.handle,
                 company: req.body.company,
                 website: req.body.website,
                 location: req.body.location,
                 bio: req.body.bio,
-                status: req.body.status,
+                status: value.status,
                 githubusername: req.body.githubusername,
-                skills: req.body.skills.split(',').map(skill => skill.trim()),
+                skills: value.skills.split(',').map(skill => skill.trim()),
                 social: {}
             };
 
@@ -148,7 +148,6 @@ class ProfileController {
         }
     }
     // delete user ,profile and post
-
     async deleteUserData(req, res) {
         try {
             //delete post
@@ -157,6 +156,7 @@ class ProfileController {
             await ProfileModel.findOneAndDelete({ user: req.user._id })
             //dlete user 
             await UserModel.findOneAndDelete({ _id: req.user._id })
+            return res.redirect('/admin/user-list')
             res.json({ message: "user removed" })
         } catch (error) {
             console.error(error.message)

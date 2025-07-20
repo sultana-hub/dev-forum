@@ -11,6 +11,12 @@ const validateSchema = Joi.object({
     password: Joi.string().required().min(4),
     avatar: Joi.string().optional()
 });
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+});
+
 // Create Schema
 const UserSchema = new Schema({
     name: {
@@ -42,10 +48,12 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isAdmin: { type: String, default: "user" } ,
+     isBlock: { type: Boolean, default: false },
     date: {
         type: Date,
         default: Date.now
     }
 });
 const UserModel = mongoose.model('user', UserSchema);
-module.exports = {UserModel,validateSchema}  
+module.exports = {UserModel,validateSchema,loginSchema}  

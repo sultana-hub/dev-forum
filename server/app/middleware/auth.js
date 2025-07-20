@@ -19,24 +19,24 @@ const comparePassword = (password, hashedPassword) => {
 }
 
 
-const AuthCheck=(req,res,next)=>{
-    const token=req?.body?.token||req?.headers['x-access-token']
-    if(!token){
+const AuthCheck = (req, res, next) => {
+    const token = req?.body?.token || req?.headers['x-access-token']
+    if (!token) {
         return res.status(httpStatusCode.BadRequest).json({
-                    status:false,
-                    message:"please login first to access this apge"
-                })
+            status: false,
+            message: "please login first to access this apge"
+        })
     }
-    try{
-        const decoded= jwt.verify(token,process.env.JWT_SECRET_KEY)
-         console.log(" Token decoded:", decoded);
-        req.user=decoded
-          next()
-    }catch(error){
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
+        console.log(" Token decoded:", decoded);
+        req.user = decoded
+        next()
+    } catch (error) {
         return res.status(httpStatusCode.NotFound).json({
-                    status:false,
-                    message:"invalid token access"
-                })
+            status: false,
+            message: "invalid token access"
+        })
     }
 
 
