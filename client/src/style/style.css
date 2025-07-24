@@ -214,9 +214,16 @@ img {
   border: #ccc solid 1px;
 }
 
-.round-img {
+/* .round-img {
   border-radius: 50%;
+} */
+ .round-img {
+  border-radius: 50%;
+  width: 150px;
+  height: 250px;
+  object-fit: cover;
 }
+
 
 .line {
   height: 1px;

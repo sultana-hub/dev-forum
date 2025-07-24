@@ -8,6 +8,22 @@ const axiosInstance = axios.create({
 
 });
 
+axiosInstance.interceptors.request.use(
+    async function (config){
+      const token=sessionStorage.getItem("token")||localStorage.getItem("token");
+    //   console.log("taken",token) ;
+      if(token){
+        config.headers["x-access-token"]=token;
+
+      }
+      return config;
+    },
+    function(err){
+        return Promise.reject(err);
+    }
+)
+
+
 export default axiosInstance;
 
 export const imagePath = (path) => {

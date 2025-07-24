@@ -53,7 +53,7 @@ const getAvatar = (avatar) => {
     return <Alert severity="error">Error: {error.message}</Alert>;
 
   return (
-    <Container sx={{ marginBottom: '250px', paddingY: 4 }}>
+    <Container sx={{ marginBottom: '110px', paddingY: 4 }}>
       <Typography
         variant="h3"
         color="primary.main"

@@ -57,6 +57,7 @@ const SingleProfile = () => {
                         class="round-img my-1"
                         src={getAvatar(profile?.user?.avatar)}
                         alt={profile?.user?.name}
+                        //  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                     />
                     <h1 class="large">{profile?.user?.name}</h1>
                     <p class="lead"> {profile?.status} at {profile?.company}</p>
@@ -87,9 +88,9 @@ const SingleProfile = () => {
                 <div class="profile-about bg-light p-2">
                     <h2 class="text-primary">{profile?.user?.name}'s Bio</h2>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed
+                        {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed
                         doloremque nesciunt, repellendus nostrum deleniti recusandae nobis
-                        neque modi perspiciatis similique?
+                        neque modi perspiciatis similique? */}
                     </p>
                     <div class="line"></div>
                     <h2 class="text-primary">Skill Set</h2>
@@ -180,15 +181,14 @@ const SingleProfile = () => {
                             <h4><a href="#" target="_blank"
                                 rel="noopener noreferrer">Repo One</a></h4>
                             <p>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                Repellat, laborum!
+                              https://github.com/sultana-hub/sultana-calender
                             </p>
                         </div>
                         <div>
                             <ul>
-                                <li class="badge badge-primary">Stars: 44</li>
+                                <li class="badge badge-primary">Stars: 3</li>
                                 <li class="badge badge-dark">Watchers: 21</li>
-                                <li class="badge badge-light">Forks: 25</li>
+                                <li class="badge badge-light">Forks: 5</li>
                             </ul>
                         </div>
                     </div>
@@ -197,15 +197,14 @@ const SingleProfile = () => {
                             <h4><a href="#" target="_blank"
                                 rel="noopener noreferrer">Repo Two</a></h4>
                             <p>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                Repellat, laborum!
+                               https://github.com/sultana-hub/auth_ejs
                             </p>
                         </div>
                         <div>
                             <ul>
-                                <li class="badge badge-primary">Stars: 44</li>
+                                <li class="badge badge-primary">Stars: 2</li>
                                 <li class="badge badge-dark">Watchers: 21</li>
-                                <li class="badge badge-light">Forks: 25</li>
+                                <li class="badge badge-light">Forks: 2</li>
                             </ul>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 import { Box, Typography, Button, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const NotFound = () => {
+const ErrorPage = () => {
   const navigate = useNavigate();
 
   return (
@@ -14,19 +14,17 @@ const NotFound = () => {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          padding: 2,
         }}
       >
-        <Typography variant="h2" fontWeight="bold" color="error" sx={{ mb: 2 }}>
+        {/* <Typography variant="h2" fontWeight="bold" color="error" sx={{ mb: 2 }}>
           404
-        </Typography>
+        </Typography> */}
         <Typography variant="h5" sx={{ mb: 2, color: "gray" }}>
-          Oops! Page Not Found
+          Oops! Unauthorized access denied
         </Typography>
         <Typography variant="body1" sx={{ mb: 3, color: "gray" }}>
-          The page you are looking for might have been removed or is temporarily unavailable.
+          Please Login 
         </Typography>
-
         <Button
           variant="contained"
           sx={{
@@ -41,22 +39,21 @@ const NotFound = () => {
               background: "linear-gradient(135deg, #e66465 0%, #9198e5 100%)",
             },
           }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
         >
-          Go Back Home
+          Go To Login
         </Button>
-
         {/* Illustration (Optional) */}
         <img
-          src="https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif"
-          alt="Not Found"
+          src="https://cdn.dribbble.com/users/1138875/screenshots/4669703/404_animation.gif"
+          alt="Error"
           style={{ maxWidth: "80%", height: "auto", marginBottom: "20px" }}
         />
 
-       
+        
       </Box>
     </Container>
   );
 };
 
-export default NotFound;
+export default ErrorPage;
