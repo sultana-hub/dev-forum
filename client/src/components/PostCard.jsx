@@ -22,45 +22,61 @@ const getAvatar = (avatar) => {
 };
 
 const PostCard = ({
-  author,
-  date,
-  content,
-  likes,
-  comments,
-  avatar,
-  onLike,
-  onUnlike,
-
+    author,
+    date,
+    content,
+    likes,
+    comments,
+    avatar,
+    onLike,
+    onUnlike,
+    postId,
+    isLiked,
+    likesCount,
+    unlikeCount
 }) => (
-  <Card sx={{ mb: 2, display: 'flex', gap: 2, p: 2 }}>
-    <Box>
-      <Avatar alt={author} src={getAvatar(avatar)} sx={{ width: 64, height: 64 }} />
-      <Typography variant="h6" mt={1}>{author}</Typography>
-    </Box>
-    <Box flex={1}>
-      <Typography variant="body1" sx={{ mb: 1 }}>{content}</Typography>
-      <Typography variant="caption" color="text.secondary">Posted on {date}</Typography>
+    <Card sx={{ mb: 2, display: 'flex', gap: 2, p: 2 }}>
+        <Box>
+            <Avatar alt={author} src={getAvatar(avatar)} sx={{ width: 64, height: 64 }} />
+            <Typography variant="h6" mt={1}>{author}</Typography>
+        </Box>
+        <Box flex={1}>
+            <Typography variant="body1" sx={{ mb: 1 }}>{content}</Typography>
+            <Typography variant="caption" color="text.secondary">Posted on {date}</Typography>
 
-      <CardActions sx={{ pl: 0, mt: 1 }}>
-       
-          <IconButton color="primary" onClick={onUnlike}>
-            <ThumbDownIcon />
-            <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography>
-          </IconButton>
-        
-          <IconButton color="primary" onClick={onLike}>
-            <ThumbUpIcon />
-            <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography>
-          </IconButton>
-    
-        <Button variant="contained" size="small" startIcon={<ChatIcon />} href="/comment">
-          Discussion <Box component="span" ml={1} fontWeight="bold">{comments}</Box>
-        </Button>
+            <CardActions sx={{ pl: 0, mt: 1 }}>
 
-        <IconButton color="error"><DeleteIcon /></IconButton>
-      </CardActions>
-    </Box>
-  </Card>
+                <IconButton color="primary" onClick={onUnlike}>
+                    <ThumbDownIcon />
+                    {unlikeCount > 0 && (
+                        <Typography variant="body2" color="textSecondary">
+                            {unlikeCount}
+                        </Typography>
+                    )}
+
+
+                    {/* <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography> */}
+                </IconButton>
+
+                <IconButton color="primary" onClick={onLike}>
+                    <ThumbUpIcon />
+                    {likesCount > 0 && (
+                        <Typography variant="body2" color="textSecondary">
+                            {likesCount}
+                        </Typography>
+                    )}
+
+                    {/* <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography> */}
+                </IconButton>
+
+                <Button variant="contained" size="small" startIcon={<ChatIcon />} href={`/post/${postId}/comment`}>
+                    Comments <Box component="span" ml={1} fontWeight="bold">{comments}</Box>
+                </Button>
+
+                <IconButton color="error"><DeleteIcon /></IconButton>
+            </CardActions>
+        </Box>
+    </Card>
 );
 
 export default PostCard

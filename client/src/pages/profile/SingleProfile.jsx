@@ -2,13 +2,10 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getSingleProfile } from '../../queryFunctions/profile/singleProfile';
 import {
-
     CircularProgress,
     Alert,
     Box,
-
 } from '@mui/material';
-
 import { imagePath } from '../../api/axiosInstance';
 import { useParams } from 'react-router-dom';
 import '../../style/style.css';

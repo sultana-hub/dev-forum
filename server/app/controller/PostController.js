@@ -124,55 +124,102 @@ class PostController {
     }
 
     //like post 
+    // async likePost(req, res) {
+    //     try {
+
+    //         const post = await PostModel.findById(req.params.id)
+
+    //         //checking post has already been liked by user
+
+    //         if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length > 0) {
+    //             return res.status(httpStatusCode.Forbidden).json({
+    //                 message: "post is already liked by the user"
+    //             })
+    //         }
+
+    //         post.likes.unshift({ user: req.user._id })
+    //         await post.save()
+    //         return res.json(post.likes)
+    //     } catch (error) {
+    //         console.error(error.message)
+    //         return res.status(httpStatusCode.InternalServerError).json({
+    //             msg: "Sever Error"
+    //         })
+    //     }
+    // }
+
+    // new like
     async likePost(req, res) {
         try {
+            const post = await PostModel.findById(req.params.id);
 
-            const post = await PostModel.findById(req.params.id)
-
-            //checking post has already been liked by user
-
-            if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length > 0) {
-                return res.status(httpStatusCode.Forbidden).json({
-                    message: "post is already liked by the user"
-                })
+            if (post.likes.some(like => like.user.toString() === req.user._id.toString())) {
+                return res.status(403).json({ message: "Post is already liked by the user" });
             }
 
-            post.likes.unshift({ user: req.user._id })
-            await post.save()
-            return res.json(post.likes)
+            // Remove from unlikes if present
+            post.unlikes = post.unlikes.filter(unlike => unlike.user.toString() !== req.user._id.toString());
+
+            post.likes.unshift({ user: req.user._id });
+            await post.save();
+
+            return res.json({ likes: post.likes, unlikes: post.unlikes });
         } catch (error) {
-            console.error(error.message)
-            return res.status(httpStatusCode.InternalServerError).json({
-                msg: "Sever Error"
-            })
+            console.error(error.message);
+            return res.status(500).json({ msg: "Server Error" });
         }
     }
+
 
 
     //unlike post 
+    // async unlikePost(req, res) {
+    //     try {
+
+    //         const post = await PostModel.findById(req.params.id)
+
+    //         //checking post has not been liked by user
+
+    //         if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length === 0) {
+    //             return res.status(httpStatusCode.Forbidden).json({
+    //                 message: "post is not liked by the user"
+    //             })
+    //         }
+    //         const removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user._id.toString())
+    //         post.likes.splice(removeIndex, 1)
+    //         await post.save()
+    //         return res.json(post.likes)
+    //     } catch (error) {
+    //         console.error(error.message)
+    //         return res.status(httpStatusCode.InternalServerError).json({
+    //             msg: "Sever Error"
+    //         })
+    //     }
+    // }
+
+    //new unlike 
+
     async unlikePost(req, res) {
         try {
+            const post = await PostModel.findById(req.params.id);
 
-            const post = await PostModel.findById(req.params.id)
-
-            //checking post has not been liked by user
-
-            if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length === 0) {
-                return res.status(httpStatusCode.Forbidden).json({
-                    message: "post is not liked by the user"
-                })
+            if (post.unlikes.some(unlike => unlike.user.toString() === req.user._id.toString())) {
+                return res.status(403).json({ message: "Post is already unliked by the user" });
             }
-            const removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user._id.toString())
-            post.likes.splice(removeIndex, 1)
-            await post.save()
-            return res.json(post.likes)
+
+            // Remove from likes if present
+            post.likes = post.likes.filter(like => like.user.toString() !== req.user._id.toString());
+
+            post.unlikes.unshift({ user: req.user._id });
+            await post.save();
+
+            return res.json({ likes: post.likes, unlikes: post.unlikes });
         } catch (error) {
-            console.error(error.message)
-            return res.status(httpStatusCode.InternalServerError).json({
-                msg: "Sever Error"
-            })
+            console.error(error.message);
+            return res.status(500).json({ msg: "Server Error" });
         }
     }
+
     //create comments
 
     async createComment(req, res) {

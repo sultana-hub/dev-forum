@@ -10,15 +10,16 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import { useParams } from 'react-router-dom';
 const Comment = () => {
+        const  userId  = sessionStorage.getItem('userId');
   return (
     <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
       {/* Back Button */}
       <Button
         variant="outlined"
         startIcon={<ArrowBackIcon />}
-        href="/post"
+        href={`/post/${userId}`}
         sx={{ mb: 2 }}
       >
         Back To Posts

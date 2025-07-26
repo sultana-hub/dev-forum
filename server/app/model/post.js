@@ -27,6 +27,13 @@ const PostSchema = new Schema({
             }
         }
     ],
+    unlikes: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId, ref: 'users'
+            }
+        }
+    ],
     comments: [{
         user: {
             type: Schema.Types.ObjectId,
@@ -57,6 +64,6 @@ const PostSchema = new Schema({
 
 })
 
-const PostModel=mongoose.model('post',PostSchema)
+const PostModel = mongoose.model('post', PostSchema)
 
-module.exports=PostModel
+module.exports = PostModel

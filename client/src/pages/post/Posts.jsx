@@ -55,12 +55,22 @@ const Posts = () => {
   });
 
   const handleLike = (postId) => {
+    console.log('Like called for:', postId);
     likeMutation.mutate(postId);
   };
 
-  const handleUnlike = (postId) => {
-    unlikeMutation.mutate(postId);
-  };
+const handleUnlike = (postId, likes = []) => {
+  const currentUserId = sessionStorage.getItem('userId');
+
+  if (!likes?.some(like => like === currentUserId || like.user === currentUserId)) {
+    console.warn('You cannot unlike a post you have not liked.');
+    return;
+  }
+
+  unlikeMutation.mutate(postId);
+};
+
+
 
   return (
     <Box sx={{ maxWidth: '800px', mx: 'auto', p: 2 }}>
@@ -108,7 +118,7 @@ const Posts = () => {
         <CircularProgress />
       ) : (
         posts?.map((post) => {
-          // const isLiked = post.likes.includes(loggedInUserId);
+          const isLiked = post.likes.includes(loggedInUserId);
 
           return (
             <PostCard
@@ -117,10 +127,13 @@ const Posts = () => {
               author={post?.user?.name}
               date={new Date(post.date).toLocaleDateString()}
               content={post.text}
-              comments={post.comments.length}
+              comments={post?.comments?.length}
               onLike={() => handleLike(post._id)}
-              onUnlike={() => handleUnlike(post._id)}
-              // isLiked={isLiked}
+              onUnlike={() => handleUnlike(post._id, post.likes)}
+              postId={post._id}
+              likesCount={post?.likes?.length}
+              unlikeCount={post?.unlikes?.length}
+              isLiked={isLiked}
             />
           );
         })

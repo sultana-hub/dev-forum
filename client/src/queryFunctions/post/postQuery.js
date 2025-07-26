@@ -35,6 +35,7 @@ export const fetchPosts = async () => {
 export const likePost = async (postId) => {
     try {
         const res = await axiosInstance.put(`${endPoints.likePost}${postId}`);
+        console.log('API CALL: like Post:', postId);
         return res.data;
     } catch (error) {
         console.error("Error fetching post:", error.response?.data || error.message);
@@ -46,7 +47,7 @@ export const likePost = async (postId) => {
 export const unlikePost = async (postId) => {
     try {
         const res = await axiosInstance.put(`${endPoints.unlikePost}${postId}`);
-
+        console.log('API CALL: Unlike Post:', postId);
         return res.data;
     } catch (error) {
         console.error("Error fetching post:", error.response?.data || error.message);
