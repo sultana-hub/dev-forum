@@ -17,7 +17,7 @@ const educationValidation = Joi.object({
     'any.required': 'Start date is required',
     'date.base': 'From must be a valid date'
   }),
-  to: Joi.date().optional(),
+  to: Joi.alternatives().try(Joi.date(), Joi.allow('', null)).optional(),
   current: Joi.boolean().optional(),
   description: Joi.string().optional()
 });

@@ -7,10 +7,12 @@ const ProfileController=require('../controller/ProfileController')
 //@ desc     get current user frofile
 //@access    private
 router.get('/me',AuthCheck,ProfileController.getProfile)
-//@routes    /api/profile/
+
+//@routes    /api/profile/create
 //@ desc     post frofile
 //@access    private
-router.post('/',AuthCheck,ProfileController.createProfile)
+router.post('/create',AuthCheck,ProfileController.createProfile)
+
 //@routes    /api/profile/
 //@ desc     get all  frofile
 //@access    public
@@ -20,6 +22,13 @@ router.get('/',ProfileController.allProfiles)
 //@ desc     get frofile by user_id
 //@access    public
 router.get('/user/:user_id',ProfileController.getProfilesByUserId)
+
+
+
+//@routes    /api/profile/update
+//@ desc     post frofile
+//@access    private
+router.post('/update',AuthCheck,ProfileController.updateProfile)
 
 //@routes    /api/profile/delete
 //@ desc     get frofile by user_id
@@ -32,10 +41,10 @@ router.delete('/delete',AuthCheck,ProfileController.deleteUserData)
 //@access    private
 router.put('/experience',AuthCheck,ProfileController.addExperience)
 
-//@routes    /api/profile/experience/:exp_id
+//@routes    /api/profile/experience/delete/:exp_id
 //@ desc     post frofile experience
 //@access    private
-router.delete('/experience/:exp_id',AuthCheck,ProfileController.deleteExperience)
+router.delete('/experience/delete/:exp_id',AuthCheck,ProfileController.deleteExperience)
 
 //@routes    /api/profile/education
 //@ desc     post frofile education
@@ -43,10 +52,10 @@ router.delete('/experience/:exp_id',AuthCheck,ProfileController.deleteExperience
 
 router.put('/education', AuthCheck, ProfileController.addEducation);
 
-//@routes    /api/profile/education/:edu_id
+//@routes    /api/profile/education/delete/:edu_id
 //@ desc     delete frofile education
 //@access    private
-router.delete('/education/:edu_id', AuthCheck, ProfileController.deleteEducation);
+router.delete('/education/delete/:edu_id', AuthCheck, ProfileController.deleteEducation);
 
 
 module.exports=router

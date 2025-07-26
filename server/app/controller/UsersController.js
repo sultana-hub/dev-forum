@@ -13,7 +13,7 @@ class UsersController {
   async register(req, res) {
     try {
       console.log(req.body);
-
+      console.log("req.file = ", req.file);
       const usersData = {
         name: req.body.name,
         email: req.body.email,
@@ -79,7 +79,7 @@ class UsersController {
   }
 
 
-  async userProfile(req, res) {
+  async getUserDetails(req, res) {
     try {
       const user = await UserModel.findById(req.user.id).select('-password');
 
@@ -292,7 +292,7 @@ class UsersController {
     }
   }
 
-  
+
 
 }
 

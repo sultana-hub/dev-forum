@@ -74,23 +74,25 @@ class PostController {
     //get all posts
     async getAllPost(req, res) {
         try {
+            const posts = await PostModel.find()
+                .populate('user', ['name', 'avatar']) // Populate only name and avatar fields from User
+                .sort({ createdAt: -1 }); // Optional: newest posts first
 
-            const post = await PostModel.find()
-            if (!post) {
-                req.flash("message", "Post not found");
+            if (!posts || posts.length === 0) {
                 return res.status(httpStatusCode.NotFound).json({
-                    message: "post not exist"
-                })
+                    message: "No posts found",
+                });
             }
-            return res.json(post)
-        } catch (error) {
-            console.log(error.message)
-            return res.status(httpStatusCode.InternalServerError).json({
-                message: "Something went wrong"
-            })
-        }
 
+            return res.status(200).json(posts);
+        } catch (error) {
+            console.error("Error fetching posts:", error.message);
+            return res.status(httpStatusCode.InternalServerError).json({
+                message: "Something went wrong",
+            });
+        }
     }
+
 
     async deletePost(req, res) {
         try {

@@ -1,13 +1,22 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Box, Button, Stack } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
 
 const Navbar = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token')
+  const userId = sessionStorage.getItem('userId')
   const logout = () => {
-    sessionStorage.removeItem('token');
+    // Clear session, localStorage, or whatever you're using
+    sessionStorage.clear();
+    // Remove all query cache
+    queryClient.clear();
+    // Redirect to login
     navigate('/');
   };
 
@@ -26,11 +35,25 @@ const Navbar = () => {
           </Typography>
         </Box>
         <Stack direction="row" spacing={2}>
+
+          <Button color="inherit" component={Link} to="/profiles">
+            Developers
+          </Button>
           {
             token ? (
               <>
 
+
+                <Button color="inherit" component={Link} to={`post/${userId}`}>
+
+                  Post
+                </Button>
+                <Button color="inherit" component={Link} to={`dashboard/${userId}`}>
+                  <i className="fas fa-user"></i>{''}
+                  Dashboard
+                </Button>
                 <Button color="inherit" onClick={logout}>
+                  <i className="fas fa-sign-out-alt"></i>{''}
                   Logout
                 </Button>
 
@@ -39,9 +62,7 @@ const Navbar = () => {
 
               : (
                 <>
-                  <Button color="inherit" component={Link} to="/profiles">
-                    Developers
-                  </Button>
+
                   <Button color="inherit" component={Link} to="/register">
                     Register
                   </Button>

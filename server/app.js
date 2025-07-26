@@ -16,7 +16,10 @@ app.set('view engine','ejs');
 app.set('views','views')
 // Method override for PUT/DELETE
 app.use(methodOverride('_method'));
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173',  //  frontend's URL
+  credentials: true                //  allow cookies/session
+}));
 app.use(cookieParser());
 app.get('/set-cookie', (req, res) => {
   res.cookie('testcookie', 'hello-world', {
@@ -40,7 +43,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
-app.use('/uploads/users', express.static(path.join(__dirname, 'uploads/users')))
+
 
 //frontend user routes
 // const userRoutes=require('./app/routes/usersRoutes')

@@ -20,6 +20,6 @@ router.get('/profile-list',EjsAuthCheck,adminController.getAllProfiles)
 router.get('/post-list',EjsAuthCheck,adminController.getAllPost)
 router.get('/logout',EjsAuthCheck, adminController.logout)
 //delete user
-router.post('/delete/:id',EjsAuthCheck, ProfileController.deleteUserData);
+router.post('/delete/:id',EjsAuthCheck, adminController.deleteUserData);
 router.post('/delete/post/:id',EjsAuthCheck, PostController.deletePost);
 module.exports = router;

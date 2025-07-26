@@ -1,8 +1,12 @@
 import { Box, Typography, Button, Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const query = new URLSearchParams(location.search);
+  const message = query.get("message");
 
   return (
     <Container maxWidth="md">
@@ -16,15 +20,13 @@ const ErrorPage = () => {
           textAlign: "center",
         }}
       >
-        {/* <Typography variant="h2" fontWeight="bold" color="error" sx={{ mb: 2 }}>
-          404
-        </Typography> */}
         <Typography variant="h5" sx={{ mb: 2, color: "gray" }}>
           Oops! Unauthorized access denied
         </Typography>
         <Typography variant="body1" sx={{ mb: 3, color: "gray" }}>
-          Please Login 
+          {message === "session-expired" ? "Your session has expired. Please log in again." : "Please log in to access this page."}
         </Typography>
+
         <Button
           variant="contained"
           sx={{
@@ -43,14 +45,12 @@ const ErrorPage = () => {
         >
           Go To Login
         </Button>
-        {/* Illustration (Optional) */}
+
         <img
           src="https://cdn.dribbble.com/users/1138875/screenshots/4669703/404_animation.gif"
           alt="Error"
           style={{ maxWidth: "80%", height: "auto", marginBottom: "20px" }}
         />
-
-        
       </Box>
     </Container>
   );

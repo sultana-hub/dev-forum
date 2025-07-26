@@ -15,6 +15,6 @@ router.post('/login',UsersController.login)
 
 
 //@routes    /api/auth
-router.get('/',AuthCheck,UsersController.userProfile)
+router.get('/',AuthCheck,UsersController.getUserDetails)
 
 module.exports=router

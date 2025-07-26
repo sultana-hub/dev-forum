@@ -1,6 +1,6 @@
 const { UserModel, validateSchema, loginSchema } = require("../model/Users");
 const { ProfileModel } = require('../model/Profile')
-const PostModel=require('../model/post')
+const PostModel = require('../model/post')
 const bcrypt = require('bcryptjs');
 // const nodemailer = require('nodemailer');
 // const transporter = require('../config/EmailConfig')
@@ -129,7 +129,7 @@ class AdminController {
         }
     }
 
-    
+
     async logout(req, res) {
         try {
             res.clearCookie('usertoken');
@@ -142,23 +142,23 @@ class AdminController {
 
     }
 
-//  async userList(req, res) {
-//         try {
-//             const message = req.flash('Welcome to users list');
-//             const users = await UserModel.find({ isAdmin: { $ne: 'admin' } });
+    //  async userList(req, res) {
+    //         try {
+    //             const message = req.flash('Welcome to users list');
+    //             const users = await UserModel.find({ isAdmin: { $ne: 'admin' } });
 
-//             res.render('users/list', {
-//                 title: "User List",
-//                 users,             //  This is the array to loop over
-//                 user: req.user,    //  Logged-in admin user (used for profile etc.)
-//                 message
-//             });
-//         } catch (error) {
-//             console.error("List error:", error);
-//             req.flash("message", "Failed to load users list");
-//             return res.redirect("/admin/list");
-//         }
-//     }
+    //             res.render('users/list', {
+    //                 title: "User List",
+    //                 users,             //  This is the array to loop over
+    //                 user: req.user,    //  Logged-in admin user (used for profile etc.)
+    //                 message
+    //             });
+    //         } catch (error) {
+    //             console.error("List error:", error);
+    //             req.flash("message", "Failed to load users list");
+    //             return res.redirect("/admin/list");
+    //         }
+    //     }
 
 
     // controller
@@ -295,7 +295,7 @@ class AdminController {
                 query.user = { $in: matchingUserIds };
             }
 
-            const posts = await PostModel.find(query).sort({date:-1})
+            const posts = await PostModel.find(query).sort({ date: -1 })
                 .populate('user', 'name email');
 
             res.render('posts/list', {
@@ -313,7 +313,28 @@ class AdminController {
 
     }
 
+    async deleteUserData(req, res) {
+        try {
+            const userId = req.user._id;
 
+            // Delete all posts created by the user (assuming you have a PostModel)
+            await PostModel.deleteMany({ user: userId });
+
+            // Delete profile
+            await ProfileModel.findOneAndDelete({ user: userId });
+
+            // Delete user
+            await UserModel.findOneAndDelete({ _id: userId });
+
+            // Redirect or send response
+            return res.redirect('/admin/user-list');
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).json({
+                message: 'Server error: ' + error.message,
+            });
+        }
+    }
 
 
 }

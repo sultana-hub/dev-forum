@@ -2,35 +2,44 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Joi = require('joi');
 
-const profileValidation = Joi.object({
-  status: Joi.string().required().messages({
-    'any.required': 'Status is required',
-    'string.empty': 'Status cannot be empty'
-  }),
-  skills: Joi.alternatives().try(
-    Joi.string().required(),
-    Joi.array().items(Joi.string()).required()
-  ).messages({
-    'any.required': 'Skills are required'
-  }),
-    handle: Joi.string().max(40).required().messages({
-    'any.required': 'Handle is required',
-    'string.empty': 'Handle cannot be empty',
-    'string.max': 'Handle must be less than or equal to 40 characters'
-  }),
-});
+// const profileValidation = Joi.object({
+//   handle: Joi.string().optional(),
+//   status: Joi.string().required(),
+//   skills: Joi.alternatives().try(
+//     Joi.string(),
+//     Joi.array().items(Joi.string())
+//   ).required()
+// }).options({ stripUnknown: true });
 
+const profileValidation = Joi.object({
+  handle: Joi.string().optional(),
+  status: Joi.string().required(),
+  skills: Joi.alternatives().try(
+    Joi.string(),
+    Joi.array().items(Joi.string())
+  ).required(),
+  company: Joi.string().optional(),
+  website: Joi.string().optional(),
+  location: Joi.string().optional(),
+  bio: Joi.string().optional(),
+  githubusername: Joi.string().optional(),
+  social: Joi.object({
+    youtube: Joi.string().uri().optional(),
+    twitter: Joi.string().uri().optional(),
+    facebook: Joi.string().uri().optional(),
+    linkedin: Joi.string().uri().optional(),
+    instagram: Joi.string().uri().optional()
+  }).optional()
+}).options({ stripUnknown: true });
 
 // Create Schema
 const ProfileSchema = new Schema({
   user: {
-  type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
   handle: {
     type: String,
-    required: true,
-    max: 40
   },
   company: {
     type: String
@@ -136,5 +145,5 @@ const ProfileSchema = new Schema({
     default: Date.now
   }
 });
-const  ProfileModel = mongoose.model('profile', ProfileSchema);
-module.exports = {ProfileModel,profileValidation} 
+const ProfileModel = mongoose.model('profile', ProfileSchema);
+module.exports = { ProfileModel, profileValidation } 

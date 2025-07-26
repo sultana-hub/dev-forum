@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllProfiles } from '../queryFunctions/getAllProfiles';
+import { getAllProfiles } from '../../queryFunctions/profile/getAllProfiles';
 import {
   Container,
   Typography,
@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import { imagePath } from '../api/axiosInstance';
+import { imagePath } from '../../api/axiosInstance';
 const Profiles = () => {
   const { data: profiles, isPending, isError, error } = useQuery({
     queryKey: ['profiles'],

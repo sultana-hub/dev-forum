@@ -3,7 +3,7 @@ const { AuthCheck } = require('../middleware/auth')
 const PostController = require('../controller/PostController')
 const router = express.Router()
 
-//@routes   POST  /api/posts
+//@routes   POST  /api/posts/create
 //@desc     Create a Post
 //@access    Private
 router.post('/create', AuthCheck, PostController.createPost)

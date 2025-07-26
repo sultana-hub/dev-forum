@@ -1,17 +1,17 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getSingleProfile } from '../queryFunctions/singleProfile';
+import { getSingleProfile } from '../../queryFunctions/profile/singleProfile';
 import {
 
     CircularProgress,
     Alert,
     Box,
-   
+
 } from '@mui/material';
 
-import { imagePath } from '../api/axiosInstance';
+import { imagePath } from '../../api/axiosInstance';
 import { useParams } from 'react-router-dom';
-import '../style/style.css';
+import '../../style/style.css';
 const SingleProfile = () => {
     const { userId } = useParams();
 
@@ -57,24 +57,65 @@ const SingleProfile = () => {
                         class="round-img my-1"
                         src={getAvatar(profile?.user?.avatar)}
                         alt={profile?.user?.name}
-                        //  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                    //  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                     />
                     <h1 class="large">{profile?.user?.name}</h1>
                     <p class="lead"> {profile?.status} at {profile?.company}</p>
                     <p>{profile?.user?.city}</p>
+
                     <div class="icons my-1">
-                        <a href="#" target="_blank" rel="noopener noreferrer">
-                            <i class="fas fa-globe fa-2x"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-twitter fa-2x"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-facebook fa-2x"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer">
+
+                        {
+                            profile?.website ? (
+                                <a href={profile.website} target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-globe fa-2x"></i>
+                                </a>
+                            ) : (
+                                <a href="https://www.webskitters.com/" target="_blank" rel="noopener noreferrer">
+
+                                </a>
+                            )
+                        }
+
+
+                        {
+                            profile?.social?.twitter ? (
+                                <a href="https://x.com/home?lang=en-gb" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-twitter fa-2x"></i>
+                                </a>
+                            ) : (
+                                <>
+                                    <a href="https://x.com/home?lang=en-gb" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-twitter fa-2x"></i>
+                                    </a>
+                                </>
+                            )
+                        }
+
+                        {
+                            profile?.social?.facebook ? (
+                                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-facebook fa-2x"></i>
+                                </a>
+                            ) : (
+                                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-facebook fa-2x"></i>
+                                </a>
+                            )
+                        }
+                        {
+                            profile?.social?.linkedin ? (
+                                <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-linkedin fa-2x"></i>
+                                </a>
+                            ):(
+                                  <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-linkedin fa-2x"></i>
                         </a>
+                            )
+                       }
+
+
                         <a href="#" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-youtube fa-2x"></i>
                         </a>
@@ -88,9 +129,7 @@ const SingleProfile = () => {
                 <div class="profile-about bg-light p-2">
                     <h2 class="text-primary">{profile?.user?.name}'s Bio</h2>
                     <p>
-                        {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed
-                        doloremque nesciunt, repellendus nostrum deleniti recusandae nobis
-                        neque modi perspiciatis similique? */}
+                        {profile?.bio}
                     </p>
                     <div class="line"></div>
                     <h2 class="text-primary">Skill Set</h2>
@@ -181,7 +220,7 @@ const SingleProfile = () => {
                             <h4><a href="#" target="_blank"
                                 rel="noopener noreferrer">Repo One</a></h4>
                             <p>
-                              https://github.com/sultana-hub/sultana-calender
+                                https://github.com/sultana-hub/sultana-calender
                             </p>
                         </div>
                         <div>
@@ -197,7 +236,7 @@ const SingleProfile = () => {
                             <h4><a href="#" target="_blank"
                                 rel="noopener noreferrer">Repo Two</a></h4>
                             <p>
-                               https://github.com/sultana-hub/auth_ejs
+                                https://github.com/sultana-hub/auth_ejs
                             </p>
                         </div>
                         <div>

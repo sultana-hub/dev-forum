@@ -15,9 +15,9 @@ router.post('/register', UserImageUpload.single('avatar'), UsersController.regis
 router.post('/login', UsersController.login)
 
 //@routes  GET  /api/users
-//Description     get user profile
+//Description     get single user profile
 //@access    private
-router.get('/', AuthCheck, UsersController.userProfile)
+router.get('/', AuthCheck, UsersController.getUserDetails)
 
 // router.post('/verify/email',UsersController.verifyEmail)
 // router.post('/login',UsersController.login)
