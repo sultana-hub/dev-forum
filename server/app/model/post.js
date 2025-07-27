@@ -30,7 +30,7 @@ const PostSchema = new Schema({
     unlikes: [
         {
             user: {
-                type: mongoose.Schema.Types.ObjectId, ref: 'users'
+                type: mongoose.Schema.Types.ObjectId, ref: 'user'
             }
         }
     ],

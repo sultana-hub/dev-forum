@@ -17,9 +17,10 @@ export const endPoints = {
   getAllPosts: "api/posts/allPosts",
   getPostById: "api/posts/",
   deletePost: "api/posts/delete/",
+  updatePost: "api/posts/update/",
   likePost: "api/posts/like/",
   unlikePost: "api/posts/unlike/",
   createcomment: "api/posts/comment/post/",
-  getComments:"api/posts/comments/post/",
+  getComments: "api/posts/comments/post/",
   deleteComment: "api/posts/delete-comment/"
 };

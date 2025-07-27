@@ -108,7 +108,7 @@ const Comment = () => {
   if (isError) return <Typography color="error">Error: {error.message}</Typography>;
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
+    <Box sx={{ maxWidth: 800, mx: "auto", p: 2 ,marginBottom:'80px' }}>
       {/* Back Button */}
       <Button
         variant="outlined"

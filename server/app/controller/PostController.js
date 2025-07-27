@@ -134,44 +134,76 @@ class PostController {
         try {
             const post = await PostModel.findById(req.params.id);
 
-            if (post.likes.some(like => like.user.toString() === req.user._id.toString())) {
-                return res.status(403).json({ message: "Post is already liked by the user" });
+            // Remove from unlikes if user had unliked before
+            post.unlikes = post.unlikes.filter(unlike => unlike.user.toString() !== req.user._id);
+
+            if (post.likes.some(like => like.user.toString() === req.user._id)) {
+                return res.status(400).json({ message: 'Post already liked by this user' });
             }
-
-            // Remove from unlikes if present
-            post.unlikes = post.unlikes.filter(unlike => unlike.user.toString() !== req.user._id.toString());
-
+            post.likes = post.likes.filter(like => like?.user);
             post.likes.unshift({ user: req.user._id });
+
             await post.save();
 
-            return res.json({ likes: post.likes, unlikes: post.unlikes });
+            res.json(post);
         } catch (error) {
             console.error(error.message);
-            return res.status(500).json({ msg: "Server Error" });
+            res.status(500).send('Server Error');
         }
     }
     //new unlike 
 
-    async unlikePost(req, res) {
-        try {
-            const post = await PostModel.findById(req.params.id);
+   async unlikePost(req, res) {
+  try {
+    console.log("🔁 Unlike request received");
+    console.log("Post ID:", req.params.id);
+    console.log("User ID:", req.user._id);
 
-            if (post.unlikes.some(unlike => unlike.user.toString() === req.user._id.toString())) {
-                return res.status(403).json({ message: "Post is already unliked by the user" });
-            }
-
-            // Remove from likes if present
-            post.likes = post.likes.filter(like => like.user.toString() !== req.user._id.toString());
-
-            post.unlikes.unshift({ user: req.user._id });
-            await post.save();
-
-            return res.json({ likes: post.likes, unlikes: post.unlikes });
-        } catch (error) {
-            console.error(error.message);
-            return res.status(500).json({ msg: "Server Error" });
-        }
+    const post = await PostModel.findById(req.params.id);
+    if (!post) {
+      console.log("🚫 Post not found");
+      return res.status(404).json({ message: 'Post not found' });
     }
+
+    // Cleanup: remove broken entries
+    post.likes = post.likes.filter(like => like?.user);
+    post.unlikes = post.unlikes.filter(unlike => unlike?.user);
+
+    // ✅ Safe check if user already liked
+    const likedIndex = post.likes.findIndex(
+      (like) => like?.user?.toString() === req.user._id
+    );
+    console.log("Liked Index:", likedIndex);
+
+    if (likedIndex === -1) {
+      console.log("❌ Post not liked yet by this user");
+      return res.status(400).json({ message: 'You have not liked this post' });
+    }
+
+    // ❌ Remove from likes
+    post.likes.splice(likedIndex, 1);
+    console.log("✅ Removed from likes");
+
+    // ✅ Check if already unliked
+    const alreadyUnliked = post.unlikes.some(
+      (unlike) => unlike?.user?.toString() === req.user._id
+    );
+
+    if (!alreadyUnliked) {
+      post.unlikes.push({ user: req.user._id});
+      console.log("👍 Added to unlikes");
+    }
+
+    await post.save();
+    console.log("📦 Post updated successfully");
+    return res.json({ message: 'Post unliked successfully', post });
+
+  } catch (error) {
+    console.error("🔥 Server error in unlikePost:", error.message);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+}
+
 
     //create comments
     async createComment(req, res) {
@@ -240,95 +272,98 @@ class PostController {
     }
 
 
-//   async deleteComment(req, res) {
-//     try {
-//         const post = await PostModel.findById(req.params.postId); 
+    async updatePost(req, res) {
 
-//         if (!post) {
-//             return res.status(httpStatusCode.NotFound).json({
-//                 message: "Post not found"
-//             });
-//         }
+        try {
+            const { text } = req.body;
+            const postId = req.params.postId;
 
-//         const comment = post.comments.find(
-//             comment => comment._id.toString() === req.params.comment_id
-//         );
+            if (!text || text.trim() === "") {
+                return res.status(httpStatusCode.BadRequest).json({
+                    message: "Post text cannot be empty.",
+                });
+            }
 
-//         if (!comment) {
-//             return res.status(httpStatusCode.NotFound).json({
-//                 message: "Comment does not exist"
-//             });
-//         }
+            const post = await PostModel.findById(postId);
 
-//         if (comment.user.toString() !== req.user._id.toString()) {
-//             return res.status(httpStatusCode.Forbidden).json({
-//                 message: "User not authorized"
-//             });
-//         }
+            if (!post) {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "Post not found.",
+                });
+            }
 
-//         const removeIndex = post.comments.findIndex(
-//             comment => comment._id.toString() === req.params.comment_id
-//         );
+            // Check if the current user is the owner of the post
+            if (post.user.toString() !== req.user._id.toString()) {
+                return res.status(httpStatusCode.Forbidden).json({
+                    message: "You are not authorized to edit this post.",
+                });
+            }
 
-//         post.comments.splice(removeIndex, 1);
-//         await post.save();
+            // Update the post text
+            post.text = text;
+            await post.save();
 
-//         return res.json({ message: "Comment deleted successfully" });
+            return res.status(httpStatusCode.Ok).json({
+                message: "Post updated successfully.",
+                post,
+            });
 
-//     } catch (error) {
-//         return res.status(httpStatusCode.InternalServerError).json({
-//             message: error.message
-//         });
-//     }
-// }
-
-async deleteComment(req, res) {
-    try {
-        const { postId, comment_id } = req.params;
-
-        // Find the post by ID
-        const post = await PostModel.findById(postId);
-
-        if (!post) {
-            return res.status(httpStatusCode.NotFound).json({
-                message: "Post not found"
+        } catch (error) {
+            console.error("Update Post Error:", error.message);
+            return res.status(httpStatusCode.InternalServerError).json({
+                message: "Something went wrong. Try again later.",
             });
         }
+    };
 
-        // Find the comment inside the post
-        const comment = post.comments.find(
-            (comment) => comment._id.toString() === comment_id
-        );
 
-        if (!comment) {
-            return res.status(httpStatusCode.NotFound).json({
-                message: "Comment does not exist"
+    async deleteComment(req, res) {
+        try {
+            const { postId, comment_id } = req.params;
+
+            // Find the post by ID
+            const post = await PostModel.findById(postId);
+
+            if (!post) {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "Post not found"
+                });
+            }
+
+            // Find the comment inside the post
+            const comment = post.comments.find(
+                (comment) => comment._id.toString() === comment_id
+            );
+
+            if (!comment) {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "Comment does not exist"
+                });
+            }
+
+            // Check if the user deleting the comment is the comment's owner
+            if (comment.user.toString() !== req.user._id.toString()) {
+                return res.status(httpStatusCode.Forbidden).json({
+                    message: "User not authorized"
+                });
+            }
+
+            // Remove the comment
+            post.comments = post.comments.filter(
+                (comment) => comment._id.toString() !== comment_id
+            );
+
+            await post.save();
+
+            return res.json({ message: "Comment deleted successfully" });
+
+        } catch (error) {
+            console.error("Delete comment error:", error.message);
+            return res.status(httpStatusCode.InternalServerError).json({
+                message: error.message
             });
         }
-
-        // Check if the user deleting the comment is the comment's owner
-        if (comment.user.toString() !== req.user._id.toString()) {
-            return res.status(httpStatusCode.Forbidden).json({
-                message: "User not authorized"
-            });
-        }
-
-        // Remove the comment
-        post.comments = post.comments.filter(
-            (comment) => comment._id.toString() !== comment_id
-        );
-
-        await post.save();
-
-        return res.json({ message: "Comment deleted successfully" });
-
-    } catch (error) {
-        console.error("Delete comment error:", error.message);
-        return res.status(httpStatusCode.InternalServerError).json({
-            message: error.message
-        });
     }
-}
 
 
 }

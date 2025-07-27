@@ -117,3 +117,14 @@ export const deleteComment = async ({ postId, commentId }) => {
 };
 
 
+export const updatePost = async ({ postId, updatedData }) => {
+  try {
+    const res = await axiosInstance.put(`/api/posts/update/${postId}`, updatedData );
+    return res.data;
+  } catch (error) {
+    console.error('Error updating ost :', error.response?.data || error.message);
+    throw error;
+  }
+
+};
+

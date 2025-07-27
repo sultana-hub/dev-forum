@@ -57,6 +57,10 @@ router.get('/comments/post/:postId', AuthCheck, PostController.getComments);
 //@access    Private
 router.delete('/delete-comment/:postId/:comment_id', AuthCheck, PostController.deleteComment);
 
+// @route   PUT /api/posts/update/:postId
+// @desc    Update a post
+// @access  Private
+router.put('/update/:postId', AuthCheck, PostController.updatePost);
 
 
 module.exports = router
