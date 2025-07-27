@@ -5,7 +5,6 @@ import {
     Box,
     Avatar,
     Card,
-    CardContent,
     CardActions,
     IconButton,
 } from '@mui/material';
@@ -25,7 +24,7 @@ const PostCard = ({
     author,
     date,
     content,
-    likes,
+    deletePost,
     comments,
     avatar,
     onLike,
@@ -54,10 +53,7 @@ const PostCard = ({
                         </Typography>
                     )}
 
-
-                    {/* <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography> */}
                 </IconButton>
-
                 <IconButton color="primary" onClick={onLike}>
                     <ThumbUpIcon />
                     {likesCount > 0 && (
@@ -65,15 +61,12 @@ const PostCard = ({
                             {likesCount}
                         </Typography>
                     )}
-
-                    {/* <Typography variant="body2" sx={{ ml: 0.5 }}>{likes}</Typography> */}
                 </IconButton>
-
                 <Button variant="contained" size="small" startIcon={<ChatIcon />} href={`/post/${postId}/comment`}>
                     Comments <Box component="span" ml={1} fontWeight="bold">{comments}</Box>
                 </Button>
 
-                <IconButton color="error"><DeleteIcon /></IconButton>
+                <IconButton color="error" onClick={deletePost}><DeleteIcon /></IconButton>
             </CardActions>
         </Box>
     </Card>

@@ -57,7 +57,7 @@ const Router = () => {
             {/* user profile */}
             <Route path="/profiles/profile/:userId" element={<SingleProfile />} />
             {/* post and comment  */}
-            <Route path="/post/:userId" element={<Posts />} />
+            <Route path="/posts" element={<Posts />} />
             <Route path="/post/:postId/comment" element={<Comment />} />
 
           </Route>

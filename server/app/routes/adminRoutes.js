@@ -1,9 +1,9 @@
 const express = require('express');
 const adminController = require('../controller/AdminController')
 const EjsAuthCheck = require('../middleware/EjsAuthCheck')
-const UserImageUpload=require('../helper/usersImageUpload')
-const ProfileController=require('../controller/ProfileController')
-const PostController=require('../controller/PostController')
+// const UserImageUpload=require('../helper/usersImageUpload')
+// const ProfileController=require('../controller/ProfileController')
+// const PostController=require('../controller/PostController')
 
 const router = express.Router();
 //view login and register pages
@@ -21,5 +21,5 @@ router.get('/post-list',EjsAuthCheck,adminController.getAllPost)
 router.get('/logout',EjsAuthCheck, adminController.logout)
 //delete user
 router.post('/delete/:id',EjsAuthCheck, adminController.deleteUserData);
-router.post('/delete/post/:id',EjsAuthCheck, PostController.deletePost);
+router.post('/delete/post/:id',EjsAuthCheck, adminController.deletePost);
 module.exports = router;

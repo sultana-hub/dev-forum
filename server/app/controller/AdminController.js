@@ -336,6 +336,64 @@ class AdminController {
         }
     }
 
+async getPostById(req, res) {
+    try {
+        const id = req.params.id;
+        const post = await PostModel.findById(id);
+        
+        if (!post) {
+            req.flash("message", "Post not found");
+            return res.status(httpStatusCode.NotFound).json({
+                message: "post not exist"
+            });
+        }
+
+        return res.json(post);
+
+    } catch (error) {
+        console.log(error.message);
+
+        if (error.kind === 'ObjectId') {
+            return res.status(httpStatusCode.NotFound).json({
+                message: "post not exist"
+            });
+        }
+
+        return res.status(httpStatusCode.InternalServerError).json({
+            message: "Something went wrong"
+        });
+    }
+}
+
+    
+    async deletePost(req, res) {
+        try {
+            const post = await PostModel.findById(req.params.id);
+
+            if (!post) {
+                req.flash("message", "Post not found");
+                return res.redirect('/admin/post-list');
+            }
+            if (post.user.toString() !== req.user._id.toString() && req.user.isAdmin !== 'admin') {
+                req.flash("message", "Unauthorized action");
+                return res.redirect('/admin/post-list');
+            }
+
+            await post.deleteOne();
+
+            req.flash("message", "Post deleted successfully");
+            return res.redirect('/admin/post-list');
+        } catch (error) {
+            console.error("Delete Post Error:", error.message);
+            if (error.kind === 'ObjectId') {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "post not exist"
+                })
+            }
+            req.flash("message", "Error in deleting post");
+            return res.redirect('/admin/post-list');
+        }
+    }
 
 }
 

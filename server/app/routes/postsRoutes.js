@@ -3,6 +3,7 @@ const { AuthCheck } = require('../middleware/auth')
 const PostController = require('../controller/PostController')
 const router = express.Router()
 
+
 //@routes   POST  /api/posts/create
 //@desc     Create a Post
 //@access    Private
@@ -23,7 +24,7 @@ router.get('/:id', AuthCheck, PostController.getPostById)
 //@routes   delete  /api/posts/delete/:id
 //@desc     delete a Post by id
 //@access    Private
-router.get('/delete/:id', AuthCheck, PostController.deletePost)
+router.delete('/delete/:id', AuthCheck, PostController.deletePost)
 
 
 //@routes   PUT /api/posts/like/:id
@@ -38,16 +39,17 @@ router.put('/like/:id', AuthCheck, PostController.likePost)
 router.put('/unlike/:id', AuthCheck, PostController.unlikePost)
 
 
-//@routes   PUT  /api/posts/comment/:id
+//@route    POST   /api/posts/comment/post/:postId
 //@desc     Create a comment
-//@access    Private
-router.post('/comment/:id', AuthCheck, PostController.createComment)
+//@access   Private
+router.post('/comment/post/:postId', AuthCheck, PostController.createComment);
 
 
-//@routes   DELETE  /api/posts/delete-comment/:id/:comment_id
+//@routes   DELETE  /delete-comment/:postId/:comment_id
 //@desc     delete a comment
 //@access    Private
-router.post('/comment/:id', AuthCheck, PostController.deleteComment)
+router.delete('/delete-comment/:postId/:comment_id', AuthCheck, PostController.deleteComment);
+
 
 
 module.exports = router

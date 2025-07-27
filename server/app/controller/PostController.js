@@ -44,32 +44,34 @@ class PostController {
 
 
     //get post by id
-
     async getPostById(req, res) {
         try {
-            const id = req.params.id
-            const post = await PostModel.findById(id)
+            const id = req.params.id;
+            const post = await PostModel.findById(id);
+
             if (!post) {
-                req.flash("message", "Post not found");
                 return res.status(httpStatusCode.NotFound).json({
                     message: "post not exist"
-                })
+                });
             }
-            return res.json(post)
+
+            return res.json(post);
+
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
 
             if (error.kind === 'ObjectId') {
                 return res.status(httpStatusCode.NotFound).json({
                     message: "post not exist"
-                })
+                });
             }
+
             return res.status(httpStatusCode.InternalServerError).json({
                 message: "Something went wrong"
-            })
+            });
         }
-
     }
+
 
     //get all posts
     async getAllPost(req, res) {
@@ -92,25 +94,27 @@ class PostController {
             });
         }
     }
-
-
     async deletePost(req, res) {
         try {
             const post = await PostModel.findById(req.params.id);
 
             if (!post) {
-                req.flash("message", "Post not found");
-                return res.redirect('/admin/post-list');
+
+                return res.status(httpStatusCode.BadRequest).json({
+                    message: "Post does not exist"
+                })
             }
-            if (post.user.toString() !== req.user._id.toString() && req.user.isAdmin !== 'admin') {
-                req.flash("message", "Unauthorized action");
-                return res.redirect('/admin/post-list');
+            if (post.user.toString() !== req.user._id.toString()) {
+                return res.status(httpStatusCode.Unauthorized).json({
+                    message: "Unauthorized Action"
+                })
             }
 
             await post.deleteOne();
+            return res.status(httpStatusCode.Ok).json({
+                message: "Post deleted successfully"
+            })
 
-            req.flash("message", "Post deleted successfully");
-            return res.redirect('/admin/post-list');
         } catch (error) {
             console.error("Delete Post Error:", error.message);
             if (error.kind === 'ObjectId') {
@@ -118,35 +122,12 @@ class PostController {
                     message: "post not exist"
                 })
             }
-            req.flash("message", "Error in deleting post");
-            return res.redirect('/admin/post-list');
+
+            return res.status(httpStatusCode.InternalServerError).json({
+                message: "Server Error: " + error.message,
+            });
         }
     }
-
-    //like post 
-    // async likePost(req, res) {
-    //     try {
-
-    //         const post = await PostModel.findById(req.params.id)
-
-    //         //checking post has already been liked by user
-
-    //         if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length > 0) {
-    //             return res.status(httpStatusCode.Forbidden).json({
-    //                 message: "post is already liked by the user"
-    //             })
-    //         }
-
-    //         post.likes.unshift({ user: req.user._id })
-    //         await post.save()
-    //         return res.json(post.likes)
-    //     } catch (error) {
-    //         console.error(error.message)
-    //         return res.status(httpStatusCode.InternalServerError).json({
-    //             msg: "Sever Error"
-    //         })
-    //     }
-    // }
 
     // new like
     async likePost(req, res) {
@@ -169,34 +150,6 @@ class PostController {
             return res.status(500).json({ msg: "Server Error" });
         }
     }
-
-
-
-    //unlike post 
-    // async unlikePost(req, res) {
-    //     try {
-
-    //         const post = await PostModel.findById(req.params.id)
-
-    //         //checking post has not been liked by user
-
-    //         if (post.likes.filter(like => like.user.toString() === req.user._id.toString()).length === 0) {
-    //             return res.status(httpStatusCode.Forbidden).json({
-    //                 message: "post is not liked by the user"
-    //             })
-    //         }
-    //         const removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user._id.toString())
-    //         post.likes.splice(removeIndex, 1)
-    //         await post.save()
-    //         return res.json(post.likes)
-    //     } catch (error) {
-    //         console.error(error.message)
-    //         return res.status(httpStatusCode.InternalServerError).json({
-    //             msg: "Sever Error"
-    //         })
-    //     }
-    // }
-
     //new unlike 
 
     async unlikePost(req, res) {
@@ -221,69 +174,91 @@ class PostController {
     }
 
     //create comments
-
     async createComment(req, res) {
-
         try {
-            const { error, value } = postValidation.validate({
-                text: req.body.text
-            })
+            const { text } = req.body;
+            const { error, value } = postValidation.validate({ text });
+
             if (error) {
                 return res.status(httpStatusCode.BadRequest).json({
                     message: error.details[0].message
-                })
+                });
             }
-            const user = await UserModel.findById(req.user._id).select('-password')
-            const post = await PostModel.findById(req.params.id)
-            const newComments = {
+
+            const user = await UserModel.findById(req.user._id).select('-password');
+            const post = await PostModel.findById(req.params.postId);
+
+            if (!post) {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "Post not found"
+                });
+            }
+
+            const newComment = {
                 text: value.text,
                 name: user.name,
                 avatar: user.avatar,
                 user: req.user._id
-            }
-            post.comments.unshift(newComments)
-            await post.save()
+            };
+
+            post.comments.unshift(newComment);
+            await post.save();
+
             return res.status(httpStatusCode.Create).json({
                 message: "Comment created successfully by user"
-            })
+            });
+
         } catch (error) {
-            console.error(error.message)
+            console.error(error.message);
             return res.status(httpStatusCode.InternalServerError).json({
                 message: error.message
-            })
+            });
         }
-
     }
+
+
     async deleteComment(req, res) {
         try {
-            const post = await PostModel.findById(req.params.id)
-            //pulling out comment
-            const comment = post.comments.find(comment => comment._id === req.params.comment_id)
+            const post = await PostModel.findById(req.params.id);
+
+            if (!post) {
+                return res.status(httpStatusCode.NotFound).json({
+                    message: "Post not found"
+                });
+            }
+
+            const comment = post.comments.find(
+                comment => comment._id.toString() === req.params.comment_id
+            );
 
             if (!comment) {
                 return res.status(httpStatusCode.NotFound).json({
-                    message: "comment does not exist"
-                })
+                    message: "Comment does not exist"
+                });
             }
-            //finding the user 
+
             if (comment.user.toString() !== req.user._id.toString()) {
                 return res.status(httpStatusCode.Forbidden).json({
-                    message: "User does not authorize"
-                })
+                    message: "User not authorized"
+                });
             }
 
-            const removeIndex = post.comments.map(comment => comment.user.toString()).indexOf(req.user._id.toString())
-            post.comments.splice(removeIndex, 1)
-            await post.save()
-            return res.json(post.likes)
+            const removeIndex = post.comments.findIndex(
+                comment => comment._id.toString() === req.params.comment_id
+            );
 
+            post.comments.splice(removeIndex, 1);
+            await post.save();
+
+            return res.json({ message: "Comment deleted successfully" });
 
         } catch (error) {
             return res.status(httpStatusCode.InternalServerError).json({
                 message: error.message
-            })
+            });
         }
     }
+
 
 }
 

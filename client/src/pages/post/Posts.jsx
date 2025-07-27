@@ -17,7 +17,7 @@ import {
   likePost,
   unlikePost,
 } from '../../queryFunctions/post/postQuery';
-
+import { deletePost } from '../../queryFunctions/post/postQuery';
 const Posts = () => {
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
@@ -59,18 +59,24 @@ const Posts = () => {
     likeMutation.mutate(postId);
   };
 
-const handleUnlike = (postId, likes = []) => {
-  const currentUserId = sessionStorage.getItem('userId');
+  const handleUnlike = (postId, likes = []) => {
+    const currentUserId = sessionStorage.getItem('userId');
 
-  if (!likes?.some(like => like === currentUserId || like.user === currentUserId)) {
-    console.warn('You cannot unlike a post you have not liked.');
-    return;
-  }
+    if (!likes?.some(like => like === currentUserId || like.user === currentUserId)) {
+      console.warn('You cannot unlike a post you have not liked.');
+      return;
+    }
 
-  unlikeMutation.mutate(postId);
-};
+    unlikeMutation.mutate(postId);
+  };
 
-
+  const deleteMutation = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      navigate('/posts');
+    },
+  });
 
   return (
     <Box sx={{ maxWidth: '800px', mx: 'auto', p: 2 }}>
@@ -119,7 +125,6 @@ const handleUnlike = (postId, likes = []) => {
       ) : (
         posts?.map((post) => {
           const isLiked = post.likes.includes(loggedInUserId);
-
           return (
             <PostCard
               key={post._id}
@@ -134,6 +139,7 @@ const handleUnlike = (postId, likes = []) => {
               likesCount={post?.likes?.length}
               unlikeCount={post?.unlikes?.length}
               isLiked={isLiked}
+              deletePost={() => deleteMutation.mutate(post._id)}
             />
           );
         })
