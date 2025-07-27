@@ -217,9 +217,10 @@ class PostController {
     }
 
 
-    async deleteComment(req, res) {
+
+    async getComments(req, res) {
         try {
-            const post = await PostModel.findById(req.params.id);
+            const post = await PostModel.findById(req.params.postId);
 
             if (!post) {
                 return res.status(httpStatusCode.NotFound).json({
@@ -227,37 +228,107 @@ class PostController {
                 });
             }
 
-            const comment = post.comments.find(
-                comment => comment._id.toString() === req.params.comment_id
-            );
-
-            if (!comment) {
-                return res.status(httpStatusCode.NotFound).json({
-                    message: "Comment does not exist"
-                });
-            }
-
-            if (comment.user.toString() !== req.user._id.toString()) {
-                return res.status(httpStatusCode.Forbidden).json({
-                    message: "User not authorized"
-                });
-            }
-
-            const removeIndex = post.comments.findIndex(
-                comment => comment._id.toString() === req.params.comment_id
-            );
-
-            post.comments.splice(removeIndex, 1);
-            await post.save();
-
-            return res.json({ message: "Comment deleted successfully" });
-
+            return res.status(httpStatusCode.Ok).json({
+                comments: post.comments
+            });
         } catch (error) {
+            console.error(error.message);
             return res.status(httpStatusCode.InternalServerError).json({
-                message: error.message
+                message: "Something went wrong"
             });
         }
     }
+
+
+//   async deleteComment(req, res) {
+//     try {
+//         const post = await PostModel.findById(req.params.postId); 
+
+//         if (!post) {
+//             return res.status(httpStatusCode.NotFound).json({
+//                 message: "Post not found"
+//             });
+//         }
+
+//         const comment = post.comments.find(
+//             comment => comment._id.toString() === req.params.comment_id
+//         );
+
+//         if (!comment) {
+//             return res.status(httpStatusCode.NotFound).json({
+//                 message: "Comment does not exist"
+//             });
+//         }
+
+//         if (comment.user.toString() !== req.user._id.toString()) {
+//             return res.status(httpStatusCode.Forbidden).json({
+//                 message: "User not authorized"
+//             });
+//         }
+
+//         const removeIndex = post.comments.findIndex(
+//             comment => comment._id.toString() === req.params.comment_id
+//         );
+
+//         post.comments.splice(removeIndex, 1);
+//         await post.save();
+
+//         return res.json({ message: "Comment deleted successfully" });
+
+//     } catch (error) {
+//         return res.status(httpStatusCode.InternalServerError).json({
+//             message: error.message
+//         });
+//     }
+// }
+
+async deleteComment(req, res) {
+    try {
+        const { postId, comment_id } = req.params;
+
+        // Find the post by ID
+        const post = await PostModel.findById(postId);
+
+        if (!post) {
+            return res.status(httpStatusCode.NotFound).json({
+                message: "Post not found"
+            });
+        }
+
+        // Find the comment inside the post
+        const comment = post.comments.find(
+            (comment) => comment._id.toString() === comment_id
+        );
+
+        if (!comment) {
+            return res.status(httpStatusCode.NotFound).json({
+                message: "Comment does not exist"
+            });
+        }
+
+        // Check if the user deleting the comment is the comment's owner
+        if (comment.user.toString() !== req.user._id.toString()) {
+            return res.status(httpStatusCode.Forbidden).json({
+                message: "User not authorized"
+            });
+        }
+
+        // Remove the comment
+        post.comments = post.comments.filter(
+            (comment) => comment._id.toString() !== comment_id
+        );
+
+        await post.save();
+
+        return res.json({ message: "Comment deleted successfully" });
+
+    } catch (error) {
+        console.error("Delete comment error:", error.message);
+        return res.status(httpStatusCode.InternalServerError).json({
+            message: error.message
+        });
+    }
+}
 
 
 }

@@ -45,7 +45,14 @@ router.put('/unlike/:id', AuthCheck, PostController.unlikePost)
 router.post('/comment/post/:postId', AuthCheck, PostController.createComment);
 
 
-//@routes   DELETE  /delete-comment/:postId/:comment_id
+
+//@route    get   /api/posts/comments/post/:postId
+//@desc     Get  all comments on the particular post
+//@access   Private
+router.get('/comments/post/:postId', AuthCheck, PostController.getComments);
+
+
+//@routes   DELETE   /api/posts/delete-comment/:postId/:comment_id
 //@desc     delete a comment
 //@access    Private
 router.delete('/delete-comment/:postId/:comment_id', AuthCheck, PostController.deleteComment);

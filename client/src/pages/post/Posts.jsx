@@ -74,7 +74,7 @@ const Posts = () => {
     mutationFn: deletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      navigate('/posts');
+      navigate(0);
     },
   });
 

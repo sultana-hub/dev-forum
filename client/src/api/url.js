@@ -20,5 +20,6 @@ export const endPoints = {
   likePost: "api/posts/like/",
   unlikePost: "api/posts/unlike/",
   createcomment: "api/posts/comment/post/",
+  getComments:"api/posts/comments/post/",
   deleteComment: "api/posts/delete-comment/"
 };

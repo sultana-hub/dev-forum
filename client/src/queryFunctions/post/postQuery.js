@@ -83,9 +83,9 @@ export const getPostById = async (postId) => {
 };
 
 
-export const createComment = async ( { postId, text }) => {
+export const createComment = async ({ postId, text }) => {
   try {
-   const res = await axiosInstance.post(`${endPoints.createcomment}${postId}`, { text });
+    const res = await axiosInstance.post(`${endPoints.createcomment}${postId}`, { text });
     return res.data;
   } catch (error) {
     console.error("Error creating comment:", error.response?.data || error.message);
@@ -93,6 +93,16 @@ export const createComment = async ( { postId, text }) => {
   }
 };
 
+export const getComments = async (postId) => {
+  try {
+    const res = await axiosInstance.get(`${endPoints.getComments}${postId}`);
+    return res.data.comments;
+  } catch (error) {
+    console.error("Error creating comment:", error.response?.data || error.message);
+    throw error;
+  }
+
+};
 
 
 export const deleteComment = async ({ postId, commentId }) => {
