@@ -198,8 +198,10 @@ import {
 } from '../../queryFunctions/post/postQuery';
 import { useState } from 'react';
 import { getCurrentProfile } from '../../queryFunctions/profile/getCurrentProfile';
-
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useNavigate } from 'react-router-dom';
 const Posts = () => {
+  const navigate=useNavigate()
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
 
@@ -252,12 +254,7 @@ const Posts = () => {
     },
   });
 
-  // const unlikeMutation = useMutation({
-  //   mutationFn: unlikePost,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['posts'] });
-  //   },
-  // });
+
 
   const unlikeMutation = useMutation({
     mutationFn: unlikePost,
@@ -295,18 +292,7 @@ const Posts = () => {
 
   const onSubmit = (data) => mutation.mutate(data);
 
-  // const handleLike = (postId) => likeMutation.mutate(postId);
 
-  // const handleLike = (postId, likes = []) => {
-  //   const isAlreadyLiked = likes.some(like => like?.user === loggedInUserId);
-
-  //   if (isAlreadyLiked) {
-  //     console.warn('You already liked this post.');
-  //     return;
-  //   }
-
-  //   likeMutation.mutate(postId);
-  // };
 const handleLike = (postId) => {
   likeMutation.mutate(postId);
 };
@@ -316,7 +302,7 @@ const handleUnlike = (postId) => {
   unlikeMutation.mutate(postId);
 };
 
-  //  const currentUserId = localStorage.getItem('userId');
+
 
   const handleEditOpen = (post) => {
     setSelectedPost(post);
@@ -339,7 +325,25 @@ console.log("Logged in user:", loggedInUserId);
   //    const isOwner = post?.user?._id?.toString() === currentUserId?.toString();
 
   if (!currentUserId || !posts?.length) {
-    return <Typography>Loading posts...</Typography>;
+    return (
+      <Paper elevation={3} sx={{ mt: 5, p: 4, textAlign: 'center', borderRadius: 4 ,marginTop:"200px",marginBottom:"200px"}}>
+      <PersonAddIcon color="primary" sx={{ fontSize: 60, mb: 2 }} />
+      <Typography variant="h6" gutterBottom>
+        Please create your profile to visit this page
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        You must have a profile to access posts and community features.
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate(`/dashboard/${loggedInUserId}`)}
+        sx={{ mt: 1 }}
+      >
+        Create Profile
+      </Button>
+    </Paper>
+    )
   }
 
   return (
