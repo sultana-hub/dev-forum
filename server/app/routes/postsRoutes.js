@@ -57,6 +57,15 @@ router.get('/comments/post/:postId', AuthCheck, PostController.getComments);
 //@access    Private
 router.delete('/delete-comment/:postId/:comment_id', AuthCheck, PostController.deleteComment);
 
+
+
+// @route   PUT /api/posts/comment/edit/:postId/:commentId
+// @desc    Edit a comment by its owner
+// @access  Private
+
+router.put('/comment/edit/:postId/:commentId', AuthCheck, PostController.editComment);
+
+
 // @route   PUT /api/posts/update/:postId
 // @desc    Update a post
 // @access  Private

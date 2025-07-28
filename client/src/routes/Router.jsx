@@ -19,6 +19,7 @@ import AddExperience from '../pages/dashboard/AddExperience'
 import CircularProgress from '@mui/material/CircularProgress';
 import Posts from '../pages/post/Posts'
 import Comment from '../pages/post/Comment'
+import OtpVerification from '../pages/auth/OtpVerification'
 const ErrorPage = lazy(() => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(import("../pages/ErrorPage"))
@@ -46,6 +47,7 @@ const Router = () => {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+            <Route path="/otp" element={<OtpVerification />} />
           {/* protected route */}
           <Route element={<ProtectedRoute />}>
             {/* user dashboard */}

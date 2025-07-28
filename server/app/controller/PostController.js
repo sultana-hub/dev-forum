@@ -272,6 +272,50 @@ class PostController {
     }
 
 
+
+
+ async editComment (req, res)  {
+  try {
+    const { postId, commentId } = req.params;
+    const { text } = req.body;
+
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ message: "Comment text cannot be empty" });
+    }
+
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // Ensure the logged-in user is the comment owner
+    if (comment.user.toString() !== req.user._id) {
+      return res.status(403).json({ message: "You are not authorized to edit this comment" });
+    }
+
+    comment.text = text;
+    await post.save();
+
+    res.status(200).json({
+      message: "Comment updated successfully",
+      comment,
+    });
+
+  } catch (error) {
+    console.error("Error editing comment:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+
+
     async updatePost(req, res) {
 
         try {

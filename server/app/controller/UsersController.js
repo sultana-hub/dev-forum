@@ -64,7 +64,7 @@ class UsersController {
         { expiresIn: "36h" }
       );
 
-      // sendEmailVerificationOTP(req, user)
+       sendEmailVerificationOTP(req, user)
       return res.status(httpStatusCode.Create).json({
         message: "User created successfully",
         data: user,
@@ -159,6 +159,59 @@ class UsersController {
     }
 
   }
+
+//resend otp 
+  async resendOtp(req, res) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          status: false,
+          message: "Email is required",
+        });
+      }
+
+      const user = await UserModel.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: "User not found with this email",
+        });
+      }
+
+      if (user.is_verify) {
+        return res.status(400).json({
+          status: false,
+          message: "Email is already verified",
+        });
+      }
+
+      // Optional: Remove existing OTPs for the user
+      await OtpModel.deleteMany({ userId: user._id });
+
+      // Send new OTP
+      await sendEmailVerificationOTP(req, user);
+
+      return res.status(200).json({
+        status: true,
+        message: "New OTP sent to your email successfully",
+      });
+
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      return res.status(500).json({
+        status: false,
+        message: "Unable to resend OTP. Please try again later.",
+      });
+    }
+  
+  }
+
+
+
+
 
   //login
   async login(req, res) {

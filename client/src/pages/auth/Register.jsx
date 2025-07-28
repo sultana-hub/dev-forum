@@ -23,6 +23,7 @@ const Register = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -34,7 +35,7 @@ const Register = () => {
         text: "You registered successfully!",
         icon: "success"
       });
-      navigate('/login'); // redirect after successful registration
+      navigate('/otp'); // redirect after successful registration
     },
     onError: () => {
       Swal.fire({

@@ -116,10 +116,43 @@ export const deleteComment = async ({ postId, commentId }) => {
   }
 };
 
+// export const editComment = async ({ postId, commentId, updatedText }) => {
+//   const res = await axiosInstance.put(
+//     `/api/posts/comment/edit/${postId}/${commentId}`,
+//     { text: updatedText }
+//   );
+//   return res.data;
+// };
+
+
+
+export const editComment = async ({ postId, commentId, updatedText }) => {
+  try {
+    console.log(" Sending edit comment request");
+    console.log(" postId:", postId);
+    console.log(" commentId:", commentId);
+    console.log(" updatedText:", updatedText);
+
+    const response = await axiosInstance.put(
+      `/api/posts/comment/edit/${postId}/${commentId}`,
+      { text: updatedText }
+    );
+
+    console.log(" Edit comment response:", response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error(" Failed to edit comment:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+
 
 export const updatePost = async ({ postId, updatedData }) => {
   try {
-    const res = await axiosInstance.put(`/api/posts/update/${postId}`, updatedData );
+    const res = await axiosInstance.put(`/api/posts/update/${postId}`, updatedData);
     return res.data;
   } catch (error) {
     console.error('Error updating ost :', error.response?.data || error.message);

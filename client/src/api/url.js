@@ -22,5 +22,8 @@ export const endPoints = {
   unlikePost: "api/posts/unlike/",
   createcomment: "api/posts/comment/post/",
   getComments: "api/posts/comments/post/",
-  deleteComment: "api/posts/delete-comment/"
+  deleteComment: "api/posts/delete-comment/",
+  editComment:"api/posts/comment/edit",
+  otpEmailVerify:"api/auth/verify/email",
+  resendOtp:"api/auth/resend/otp"
 };
