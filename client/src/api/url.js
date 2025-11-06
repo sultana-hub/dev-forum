@@ -1,4 +1,5 @@
-export const baseUrl = "http://localhost:5000/";
+// export const baseUrl = "http://localhost:5000/";
+export const baseUrl="https://dev-forum-wd9z.onrender.com/"
 
 export const endPoints = {
   register: "api/auth/register",
