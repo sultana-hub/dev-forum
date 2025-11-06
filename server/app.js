@@ -17,7 +17,7 @@ app.set('views','views')
 // Method override for PUT/DELETE
 app.use(methodOverride('_method'));
 app.use(cors({
-  origin: 'http://localhost:5173',  //  frontend's URL
+  origin: ["http://localhost:5173", "https://sultana-dev-forum.vercel.app"],  //  frontend's URL
   credentials: true                //  allow cookies/session
 }));
 app.use(cookieParser());

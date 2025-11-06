@@ -162,6 +162,8 @@ class AdminController {
 
 
     // controller
+   
+   
     async toggle_block(req, res) {
         try {
             const user = await UserModel.findById(req.params.id);
